@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>RailRecover - Ticket Recovery</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+
+            font-family: Arial, Helvetica, sans-serif;
+
+            min-height: 100vh;
+
+            color: white;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    #1d4ed8,
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    #0f766e,
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #020617,
+                    #0f172a
+                );
+
+            padding: 30px 20px;
+        }
+
+        .container {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            margin: auto;
+        }
+
+        .header {
+
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .logo {
+
+            font-size: 32px;
+
+            font-weight: bold;
+
+            margin-bottom: 8px;
+        }
+
+        .logo span {
+
+            color: #38bdf8;
+        }
+
+        .header p {
+
+            color: #94a3b8;
+
+            font-size: 15px;
+        }
+
+        .card {
+
+            background:
+                rgba(255, 255, 255, 0.07);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.12);
+
+            border-radius: 20px;
+
+            padding: 30px;
+
+            margin-bottom: 25px;
+
+            backdrop-filter: blur(12px);
+
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        .card h2 {
+
+            margin-bottom: 10px;
+        }
+
+        .description {
+
+            color: #94a3b8;
+
+            line-height: 1.6;
+
+            margin-bottom: 20px;
+        }
+
+        label {
+
+            display: block;
+
+            margin-top: 18px;
+
+            margin-bottom: 8px;
+
+            font-weight: bold;
+        }
+
+        input,
+        select {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            font-size: 16px;
+
+            background: #f8fafc;
+
+            color: #0f172a;
+
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+
+            box-shadow:
+                0 0 0 3px
+                rgba(56, 189, 248, 0.3);
+        }
+
+        button {
+
+            width: 100%;
+
+            padding: 14px;
+
+            margin-top: 20px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+        button:hover {
+
+            transform: translateY(-2px);
+
+            opacity: 0.92;
+        }
+
+        .blue-button {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #2563eb,
+                    #0891b2
+                );
+        }
+
+        .green-button {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #16a34a,
+                    #059669
+                );
+        }
+
+        .orange-button {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f59e0b,
+                    #ea580c
+                );
+        }
+
+        .result {
+
+            display: none;
+
+            margin-top: 25px;
+
+            padding: 20px;
+
+            border-radius: 14px;
+
+            background:
+                rgba(0, 0, 0, 0.25);
+        }
+
+        .result h3 {
+
+            margin-bottom: 15px;
+
+            color: #7dd3fc;
+        }
+
+        .result p {
+
+            color: #dbeafe;
+
+            line-height: 1.7;
+
+            margin: 7px 0;
+        }
+
+        .train-card {
+
+            margin-top: 18px;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            background:
+                rgba(255, 255, 255, 0.07);
+
+            border:
+                1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .train-card h3 {
+
+            color: #38bdf8;
+
+            margin-bottom: 15px;
+        }
+
+        .train-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+        }
+
+        .info-box {
+
+            padding: 12px;
+
+            border-radius: 9px;
+
+            background:
+                rgba(255, 255, 255, 0.05);
+
+            color: #cbd5e1;
+
+            line-height: 1.5;
+        }
+
+        .price {
+
+            margin-top: 15px;
+
+            font-size: 22px !important;
+
+            font-weight: bold;
+
+            color: #4ade80 !important;
+        }
+
+        .back {
+
+            display: block;
+
+            text-align: center;
+
+            margin: 30px;
+
+            color: #93c5fd;
+
+            text-decoration: none;
+        }
+
+        .back:hover {
+
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+
+            .card {
+
+                padding: 22px;
+            }
+
+            .train-info {
+
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+
+                font-size: 27px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div class="logo">
+
+            🚆 Rail<span>Recover</span>
+
+        </div>
+
+        <p>
+
+            Smart Train Journey Recovery System
+
+        </p>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- PNR TICKET RECOVERY -->
+    <!-- ================================= -->
+
+    <div class="card">
+
+        <h2>🎫 Check Your Ticket</h2>
+
+        <p class="description">
+
+            Enter your 10-digit PNR number
+            to find and recover your ticket.
+
+        </p>
+
+
+        <form id="ticketForm">
+
+            <label for="pnr">
+
+                PNR Number
+
+            </label>
+
+            <input
+                type="text"
+                id="pnr"
+                maxlength="10"
+                placeholder="Enter 10-digit PNR"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="blue-button">
+
+                🔍 Check Ticket
+
+            </button>
+
+        </form>
+
+
+        <div
+            id="result"
+            class="result">
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================= -->
+    <!-- ALTERNATIVE TRAIN SEARCH -->
+    <!-- ================================= -->
+
+    <div class="card">
+
+        <h2>
+
+            🚆 Find Alternative Trains
+
+        </h2>
+
+
+        <p class="description">
+
+            Missed your train?
+            Select your source and destination
+            districts and find available
+            alternative trains.
+
+        </p>
+
+
+        <!-- SOURCE DISTRICT -->
+
+        <label for="sourceDistrict">
+
+            From District
+
+        </label>
+
+
+        <select id="sourceDistrict">
+
+            <option value="">
+
+                Select Source District
+
+            </option>
+
+            <option value="1017">Ariyalur</option>
+
+            <option value="1018">Chengalpattu</option>
+
+            <option value="1019">Chennai</option>
+
+            <option value="1020">Coimbatore</option>
+
+            <option value="1021">Cuddalore</option>
+
+            <option value="1022">Dharmapuri</option>
+
+            <option value="1023">Dindigul</option>
+
+            <option value="1024">Erode</option>
+
+            <option value="1025">Kallakurichi</option>
+
+            <option value="1026">Kanchipuram</option>
+
+            <option value="1027">Kanyakumari</option>
+
+            <option value="1028">Karur</option>
+
+            <option value="1029">Krishnagiri</option>
+
+            <option value="1030">Madurai</option>
+
+            <option value="1031">Mayiladuthurai</option>
+
+            <option value="1032">Nagapattinam</option>
+
+            <option value="1033">Namakkal</option>
+
+            <option value="1034">Nilgiris</option>
+
+            <option value="1035">Perambalur</option>
+
+            <option value="1036">Pudukkottai</option>
+
+            <option value="1037">Ramanathapuram</option>
+
+            <option value="1038">Ranipet</option>
+
+            <option value="1039">Salem</option>
+
+            <option value="1040">Sivaganga</option>
+
+            <option value="1041">Tenkasi</option>
+
+            <option value="1042">Thanjavur</option>
+
+            <option value="1043">Theni</option>
+
+            <option value="1044">Thoothukudi</option>
+
+            <option value="1045">Tiruchirappalli</option>
+
+            <option value="1046">Tirunelveli</option>
+
+            <option value="1047">Tirupathur</option>
+
+            <option value="1048">Tiruppur</option>
+
+            <option value="1049">Tiruvallur</option>
+
+            <option value="1050">Tiruvarur</option>
+
+            <option value="1051">Vellore</option>
+
+            <option value="1052">Viluppuram</option>
+
+            <option value="1053">Virudhunagar</option>
+
+        </select>
+
+
+        <!-- DESTINATION DISTRICT -->
+
+        <label for="destinationDistrict">
+
+            To District
+
+        </label>
+
+
+        <select id="destinationDistrict">
+
+            <option value="">
+
+                Select Destination District
+
+            </option>
+
+            <option value="1017">Ariyalur</option>
+
+            <option value="1018">Chengalpattu</option>
+
+            <option value="1019">Chennai</option>
+
+            <option value="1020">Coimbatore</option>
+
+            <option value="1021">Cuddalore</option>
+
+            <option value="1022">Dharmapuri</option>
+
+            <option value="1023">Dindigul</option>
+
+            <option value="1024">Erode</option>
+
+            <option value="1025">Kallakurichi</option>
+
+            <option value="1026">Kanchipuram</option>
+
+            <option value="1027">Kanyakumari</option>
+
+            <option value="1028">Karur</option>
+
+            <option value="1029">Krishnagiri</option>
+
+            <option value="1030">Madurai</option>
+
+            <option value="1031">Mayiladuthurai</option>
+
+            <option value="1032">Nagapattinam</option>
+
+            <option value="1033">Namakkal</option>
+
+            <option value="1034">Nilgiris</option>
+
+            <option value="1035">Perambalur</option>
+
+            <option value="1036">Pudukkottai</option>
+
+            <option value="1037">Ramanathapuram</option>
+
+            <option value="1038">Ranipet</option>
+
+            <option value="1039">Salem</option>
+
+            <option value="1040">Sivaganga</option>
+
+            <option value="1041">Tenkasi</option>
+
+            <option value="1042">Thanjavur</option>
+
+            <option value="1043">Theni</option>
+
+            <option value="1044">Thoothukudi</option>
+
+            <option value="1045">Tiruchirappalli</option>
+
+            <option value="1046">Tirunelveli</option>
+
+            <option value="1047">Tirupathur</option>
+
+            <option value="1048">Tiruppur</option>
+
+            <option value="1049">Tiruvallur</option>
+
+            <option value="1050">Tiruvarur</option>
+
+            <option value="1051">Vellore</option>
+
+            <option value="1052">Viluppuram</option>
+
+            <option value="1053">Virudhunagar</option>
+
+        </select>
+
+
+        <!-- MISSED TIME -->
+
+        <label for="missedTime">
+
+            Missed Train Time
+
+        </label>
+
+
+        <input
+            type="time"
+            id="missedTime"
+            required
+        >
+
+
+        <button
+            class="green-button"
+            onclick="findAlternativeTrains()">
+
+            🚆 Find Alternative Trains
+
+        </button>
+
+
+        <div
+            id="trainResults"
+            class="result">
+
+        </div>
+
+    </div>
+
+
+    <a
+        href="/index.html"
+        class="back">
+
+        ← Back to RailRecover
+
+    </a>
+
+
+</div>
+
+
+<script>
+
+
+// =====================================
+// PNR CHECK
+// =====================================
+
+document
+    .getElementById("ticketForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+            event.preventDefault();
+
+            const pnr =
+                document
+                    .getElementById("pnr")
+                    .value
+                    .trim();
+
+            const result =
+                document
+                    .getElementById("result");
+
+            result.style.display = "block";
+
+
+            if (!/^\d{10}$/.test(pnr)) {
+
+                result.innerHTML =
+
+                    "<p>❌ Please enter a valid 10-digit PNR number.</p>";
+
+                return;
+            }
+
+
+            result.innerHTML =
+                "<p>🔍 Checking ticket...</p>";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/check-ticket?pnr=" +
+                        encodeURIComponent(pnr)
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Server error"
+                    );
+                }
+
+
+                const ticket =
+                    await response.json();
+
+
+                if (ticket === null) {
+
+                    result.innerHTML = `
+
+                        <h3>❌ Ticket Not Found</h3>
+
+                        <p>
+
+                            No ticket found for PNR
+                            <b>${pnr}</b>.
+
+                        </p>
+
+                    `;
+
+                    return;
+                }
+
+
+                result.innerHTML = `
+
+                    <h3>🎫 Ticket Found</h3>
+
+                    <p>
+
+                        <b>PNR:</b>
+                        ${ticket.pnr}
+
+                    </p>
+
+                    <p>
+
+                        <b>Train Number:</b>
+                        ${ticket.trainNumber}
+
+                    </p>
+
+                    <p>
+
+                        <b>Train Name:</b>
+                        ${ticket.trainName}
+
+                    </p>
+
+                    <p>
+
+                        <b>From:</b>
+                        ${ticket.source}
+
+                    </p>
+
+                    <p>
+
+                        <b>To:</b>
+                        ${ticket.destination}
+
+                    </p>
+
+                    <p>
+
+                        <b>Journey Date:</b>
+                        ${ticket.journeyDate}
+
+                    </p>
+
+                    <p>
+
+                        <b>Passenger:</b>
+                        ${ticket.passengerName}
+
+                    </p>
+
+                    <p>
+
+                        <b>Fare:</b>
+                        ₹${ticket.fare}
+
+                    </p>
+
+                    <p>
+
+                        <b>Status:</b>
+                        ${ticket.status}
+
+                    </p>
+
+
+                    <button
+                        class="orange-button"
+                        onclick="checkDuplicate('${ticket.pnr}')">
+
+                        🔍 Check Duplicate Ticket
+
+                    </button>
+
+
+                    <button
+                        class="blue-button"
+                        onclick="recoverTicket('${ticket.pnr}')">
+
+                        🚆 Recover Ticket
+
+                    </button>
+
+                `;
+
+            }
+
+            catch (error) {
+
+                console.error(error);
+
+                result.innerHTML = `
+
+                    <p>
+
+                        ❌ Unable to connect
+                        to the ticket recovery system.
+
+                    </p>
+
+                `;
+
+            }
+
+        }
+    );
+
+
+// =====================================
+// DUPLICATE TICKET DETECTION
+// =====================================
+
+async function checkDuplicate(pnr) {
+
+    const result =
+        document.getElementById("result");
+
+    result.style.display = "block";
+
+    result.innerHTML =
+        "<p>🔍 Checking for duplicate ticket...</p>";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/check-duplicate?pnr=" +
+                encodeURIComponent(pnr)
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Duplicate check failed"
+            );
+        }
+
+
+        const duplicateResult =
+            await response.text();
+
+
+        if (duplicateResult === "DUPLICATE") {
+
+            result.innerHTML = `
+
+                <h3>
+                    ⚠️ Duplicate Ticket Detected
+                </h3>
+
+                <p>
+
+                    A ticket with PNR
+                    <b>${pnr}</b>
+                    already exists in the system.
+
+                </p>
+
+                <p>
+
+                    🔒 Duplicate ticket detected successfully.
+
+                </p>
+
+            `;
+
+        }
+
+        else {
+
+            result.innerHTML = `
+
+                <h3>
+                    ✅ No Duplicate Found
+                </h3>
+
+                <p>
+
+                    PNR <b>${pnr}</b>
+                    is not registered as a duplicate.
+
+                </p>
+
+            `;
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        result.innerHTML =
+            "<p>❌ Unable to check duplicate ticket.</p>";
+
+    }
+
+}
+
+
+// =====================================
+// TICKET RECOVERY
+// =====================================
+
+async function recoverTicket(pnr) {
+
+    const result =
+        document.getElementById("result");
+
+    result.style.display = "block";
+
+    result.innerHTML =
+        "<p>🔄 Recovering ticket...</p>";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/recover-ticket?pnr=" +
+                encodeURIComponent(pnr)
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Recovery failed"
+            );
+        }
+
+
+        const ticket =
+            await response.json();
+
+
+        if (ticket === null) {
+
+            result.innerHTML =
+                "<p>❌ Ticket not found.</p>";
+
+            return;
+        }
+
+
+        let statusMessage = "";
+
+
+        if (
+            ticket.recoveryStatus ===
+            "SUSPICIOUS"
+        ) {
+
+            statusMessage = `
+
+                <p>
+                    ⚠️ Multiple recovery attempts detected.
+                </p>
+
+                <p>
+                    🔒 Recovery request flagged as suspicious.
+                </p>
+
+            `;
+
+        }
+
+        else {
+
+            statusMessage = `
+
+                <p>
+                    🔄 Recovery request recorded successfully.
+                </p>
+
+            `;
+
+        }
+
+
+        result.innerHTML = `
+
+            <h3>
+                🎫 Ticket Recovery
+            </h3>
+
+            <p>
+
+                <b>PNR:</b>
+                ${ticket.pnr}
+
+            </p>
+
+            <p>
+
+                <b>🚆 Train:</b>
+                ${ticket.trainName}
+
+            </p>
+
+            <p>
+
+                <b>📋 Recovery Status:</b>
+                ${ticket.recoveryStatus}
+
+            </p>
+
+            <p>
+
+                <b>🔢 Recovery Attempts:</b>
+                ${ticket.recoveryAttempts}
+
+            </p>
+
+            ${statusMessage}
+
+        `;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        result.innerHTML =
+            "<p>❌ Unable to recover ticket.</p>";
+
+    }
+
+}
+
+
+// =====================================
+// ALTERNATIVE TRAIN SEARCH
+// =====================================
+
+async function findAlternativeTrains() {
+
+    const sourceDistrict =
+        document
+            .getElementById("sourceDistrict")
+            .value;
+
+    const destinationDistrict =
+        document
+            .getElementById("destinationDistrict")
+            .value;
+
+    const missedTime =
+        document
+            .getElementById("missedTime")
+            .value;
+
+    const trainResults =
+        document
+            .getElementById("trainResults");
+
+
+    trainResults.style.display = "block";
+
+
+    // Validation
+
+    if (
+        sourceDistrict === "" ||
+        destinationDistrict === "" ||
+        missedTime === ""
+    ) {
+
+        trainResults.innerHTML = `
+
+            <h3>⚠️ Missing Information</h3>
+
+            <p>
+
+                Please select source district,
+                destination district and
+                missed train time.
+
+            </p>
+
+        `;
+
+        return;
+    }
+
+
+    // Same district
+
+    if (
+        sourceDistrict ===
+        destinationDistrict
+    ) {
+
+        trainResults.innerHTML = `
+
+            <h3>⚠️ Invalid Route</h3>
+
+            <p>
+
+                Source and destination districts
+                cannot be the same.
+
+            </p>
+
+        `;
+
+        return;
+    }
+
+
+    trainResults.innerHTML =
+        "<p>🔍 Searching for alternative trains...</p>";
+
+
+    try {
+
+        const response =
+            await fetch(
+
+                "/api/recovery?" +
+
+                "sourceDistrictId=" +
+                encodeURIComponent(sourceDistrict) +
+
+                "&destinationDistrictId=" +
+                encodeURIComponent(destinationDistrict) +
+
+                "&missedTime=" +
+                encodeURIComponent(missedTime)
+
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Train search failed"
+            );
+        }
+
+
+        const trains =
+            await response.json();
+
+
+        // No trains
+
+        if (
+            !trains ||
+            trains.length === 0
+        ) {
+
+            trainResults.innerHTML = `
+
+                <h3>
+                    🚆 No Alternative Trains Found
+                </h3>
+
+                <p>
+
+                    No trains were found after
+                    the missed train time.
+
+                </p>
+
+                <p>
+
+                    Try another route or time.
+
+                </p>
+
+            `;
+
+            return;
+        }
+
+
+        // Header
+
+        let html = `
+
+            <h3>
+                🚆 Available Alternative Trains
+            </h3>
+
+            <p>
+
+                Found
+                <b>${trains.length}</b>
+                alternative train(s).
+
+            </p>
+
+        `;
+
+
+        // Train cards
+
+        trains.forEach(
+            function(train) {
+
+                html += `
+
+                    <div class="train-card">
+
+                        <h3>
+
+                            🚆
+                            ${train.trainName}
+
+                        </h3>
+
+
+                        <div class="train-info">
+
+
+                            <div class="info-box">
+
+                                <b>
+                                    Train Number
+                                </b>
+
+                                <br>
+
+                                ${train.trainNumber}
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <b>
+                                    Route
+                                </b>
+
+                                <br>
+
+                                ${train.source}
+                                →
+                                ${train.destination}
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <b>
+                                    Departure
+                                </b>
+
+                                <br>
+
+                                🕐
+                                ${train.departureTime}
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <b>
+                                    Arrival
+                                </b>
+
+                                <br>
+
+                                🕐
+                                ${train.arrivalTime}
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <b>
+                                    Duration
+                                </b>
+
+                                <br>
+
+                                ⏱️
+                                ${train.duration}
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <b>
+                                    Available Seats
+                                </b>
+
+                                <br>
+
+                                💺
+                                ${train.availableSeats}
+
+                            </div>
+
+
+                        </div>
+
+
+                        <p class="price">
+
+                            💰 ₹${train.fare}
+
+                        </p>
+
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+
+        trainResults.innerHTML =
+            html;
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        trainResults.innerHTML = `
+
+            <h3>
+                ❌ Search Error
+            </h3>
+
+            <p>
+
+                Unable to search for
+                alternative trains.
+
+            </p>
+
+        `;
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>
+

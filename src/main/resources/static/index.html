@@ -1,0 +1,1665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RailRecover - Smart Train Journey Recovery</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            min-height: 100vh;
+            color: white;
+
+            background:
+                radial-gradient(circle at top left, #1e40af, transparent 35%),
+                radial-gradient(circle at bottom right, #0f766e, transparent 35%),
+                linear-gradient(135deg, #020617, #0f172a);
+
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 22px 7%;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .logo span {
+            color: #38bdf8;
+        }
+
+        .nav-text {
+            color: #cbd5e1;
+            font-size: 14px;
+        }
+
+        .hero {
+            min-height: 70vh;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 70px 20px 40px;
+        }
+
+        .hero-content {
+            max-width: 850px;
+        }
+
+        .badge {
+            display: inline-block;
+
+            padding: 8px 16px;
+
+            border-radius: 30px;
+
+            background: rgba(56, 189, 248, 0.12);
+
+            border: 1px solid rgba(56, 189, 248, 0.3);
+
+            color: #7dd3fc;
+
+            font-size: 14px;
+
+            margin-bottom: 25px;
+        }
+
+        .hero h1 {
+            font-size: clamp(42px, 7vw, 76px);
+
+            line-height: 1.05;
+
+            margin-bottom: 20px;
+        }
+
+        .hero h1 span {
+            color: #38bdf8;
+        }
+
+        .hero p {
+            color: #cbd5e1;
+
+            font-size: 18px;
+
+            line-height: 1.7;
+
+            max-width: 700px;
+
+            margin: auto;
+        }
+
+        .main-button {
+            display: inline-block;
+
+            margin-top: 35px;
+
+            padding: 16px 32px;
+
+            border-radius: 12px;
+
+            text-decoration: none;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            background:
+                linear-gradient(135deg, #2563eb, #0891b2);
+
+            box-shadow:
+                0 10px 30px rgba(37, 99, 235, 0.3);
+
+            transition: 0.3s;
+
+            cursor: pointer;
+        }
+
+        .main-button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 15px 35px rgba(37, 99, 235, 0.45);
+        }
+
+        .features {
+            max-width: 1100px;
+
+            margin: 20px auto 70px;
+
+            padding: 0 20px;
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 18px;
+        }
+
+        .card {
+            display: block;
+
+            padding: 28px 22px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(255,255,255,0.07);
+
+            border:
+                1px solid rgba(255,255,255,0.1);
+
+            backdrop-filter: blur(12px);
+
+            transition: 0.3s;
+
+            text-decoration: none;
+
+            color: white;
+
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-7px);
+
+            background:
+                rgba(255,255,255,0.1);
+
+            border-color:
+                rgba(56,189,248,0.4);
+        }
+
+        .icon {
+            font-size: 32px;
+
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+
+            font-size: 18px;
+        }
+
+        .card p {
+            color: #94a3b8;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+        }
+
+        .ocr-section {
+            max-width: 900px;
+
+            margin: 0 auto 80px;
+
+            padding: 0 20px;
+        }
+
+        .ocr-container {
+            padding: 35px;
+
+            border-radius: 22px;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border:
+                1px solid rgba(255,255,255,0.12);
+
+            backdrop-filter: blur(15px);
+
+            box-shadow:
+                0 15px 50px rgba(0,0,0,0.25);
+        }
+
+        .ocr-title {
+            text-align: center;
+
+            font-size: 30px;
+
+            margin-bottom: 10px;
+        }
+
+        .ocr-description {
+            text-align: center;
+
+            color: #cbd5e1;
+
+            margin-bottom: 30px;
+
+            line-height: 1.6;
+        }
+
+        .upload-box {
+            border:
+                2px dashed #60a5fa;
+
+            border-radius: 15px;
+
+            padding: 35px 20px;
+
+            text-align: center;
+
+            margin-bottom: 20px;
+        }
+
+        .upload-icon {
+            font-size: 50px;
+
+            margin-bottom: 10px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+
+            margin-top: 15px;
+
+            padding: 10px;
+
+            background: white;
+
+            color: black;
+
+            border-radius: 8px;
+        }
+
+        .scan-btn,
+        .recover-btn,
+        .alternate-btn {
+
+            width: 100%;
+
+            padding: 14px;
+
+            border: none;
+
+            border-radius: 10px;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+
+        .scan-btn {
+            background: #22c55e;
+        }
+
+        .scan-btn:hover {
+            background: #16a34a;
+
+            transform: translateY(-2px);
+        }
+
+        .recover-btn {
+            margin-top: 15px;
+
+            background: #f59e0b;
+        }
+
+        .recover-btn:hover {
+            background: #d97706;
+
+            transform: translateY(-2px);
+        }
+
+        .alternate-btn {
+            margin-top: 15px;
+
+            background:
+                linear-gradient(135deg, #2563eb, #0891b2);
+        }
+
+        .alternate-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 25px rgba(37,99,235,0.35);
+        }
+
+        #result {
+            display: none;
+
+            margin-top: 25px;
+
+            padding: 20px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(0,0,0,0.25);
+        }
+
+        .ticket-box {
+            margin-top: 15px;
+
+            padding: 20px;
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border-radius: 12px;
+
+            line-height: 1.8;
+        }
+
+        .success {
+            color: #86efac;
+        }
+
+        .warning {
+            color: #fcd34d;
+        }
+
+        .error {
+            color: #fca5a5;
+        }
+
+        .info {
+            color: #93c5fd;
+        }
+
+        pre {
+            white-space: pre-wrap;
+
+            text-align: left;
+
+            color: #dbeafe;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
+            margin-top: 15px;
+
+            background: rgba(0,0,0,0.3);
+
+            padding: 15px;
+
+            border-radius: 10px;
+
+            overflow-x: auto;
+        }
+
+        .stats {
+            max-width: 850px;
+
+            margin: 0 auto 70px;
+
+            padding: 0 20px;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 20px;
+
+            text-align: center;
+        }
+
+        .stat {
+            padding: 25px;
+
+            border-radius: 16px;
+
+            background:
+                rgba(255,255,255,0.05);
+        }
+
+        .stat h2 {
+            font-size: 32px;
+
+            color: #38bdf8;
+
+            margin-bottom: 5px;
+        }
+
+        .stat p {
+            color: #94a3b8;
+
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+
+            padding: 25px;
+
+            color: #64748b;
+
+            border-top:
+                1px solid rgba(255,255,255,0.08);
+
+            font-size: 13px;
+        }
+
+
+        /* ================================
+           SMART RECOVERY ANALYTICS
+           ================================ */
+
+        .analytics-section {
+            max-width: 1000px;
+            margin: 0 auto 80px;
+            padding: 0 20px;
+        }
+
+        .analytics-container {
+            padding: 35px;
+            border-radius: 22px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(56,189,248,0.18);
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+        }
+
+        .analytics-title {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .analytics-description {
+            text-align: center;
+            color: #cbd5e1;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .analytics-box {
+            padding: 28px 20px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .analytics-box:hover {
+            transform: translateY(-5px);
+            border-color: rgba(56,189,248,0.35);
+            background: rgba(255,255,255,0.08);
+        }
+
+        .analytics-icon {
+            font-size: 34px;
+            margin-bottom: 12px;
+        }
+
+        .analytics-box h3 {
+            font-size: 36px;
+            color: #38bdf8;
+            margin-bottom: 7px;
+        }
+
+        .analytics-box p {
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .analytics-status {
+            text-align: center;
+            margin-top: 18px;
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        @media (min-width: 650px) {
+            .analytics-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 800px) {
+
+            .features {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 550px) {
+
+            .navbar {
+                padding: 18px 5%;
+            }
+
+            .nav-text {
+                display: none;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 50px;
+            }
+
+            .hero p {
+                font-size: 16px;
+            }
+
+            .ocr-container {
+                padding: 22px;
+            }
+
+            .analytics-container {
+                padding: 22px;
+            }
+
+            .analytics-title {
+                font-size: 25px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">
+        🚆 Rail<span>Recover</span>
+    </div>
+
+    <div class="nav-text">
+        Smart Train Journey Recovery
+    </div>
+
+</nav>
+
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="badge">
+            ✨ Intelligent Railway Recovery Platform
+        </div>
+
+        <h1>
+            Never Get Stuck<br>
+            After Missing a <span>Train.</span>
+        </h1>
+
+        <p>
+            RailRecover helps passengers recover lost tickets,
+            scan ticket documents, detect duplicate tickets and
+            find alternative trains to their destination.
+        </p>
+
+        <!-- FIXED -->
+        <a
+            href="/ticket.html"
+            class="main-button">
+
+            🚆 Find Alternative Trains →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<section class="features">
+
+    <div
+        class="card"
+        onclick="scrollToOCR()">
+
+        <div class="icon">
+            🎫
+        </div>
+
+        <h3>
+            Ticket Recovery
+        </h3>
+
+        <p>
+            Search your ticket instantly using your PNR number.
+        </p>
+
+    </div>
+
+
+    <div
+        class="card"
+        onclick="scrollToOCR()">
+
+        <div class="icon">
+            📷
+        </div>
+
+        <h3>
+            OCR Scanner
+        </h3>
+
+        <p>
+            Upload a ticket PDF and automatically extract the PNR.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="icon">
+            🔍
+        </div>
+
+        <h3>
+            Duplicate Detection
+        </h3>
+
+        <p>
+            Identify duplicate tickets and improve ticket security.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="icon">
+            ⚠️
+        </div>
+
+        <h3>
+            Suspicious Detection
+        </h3>
+
+        <p>
+            Detect repeated recovery attempts and flag suspicious activity.
+        </p>
+
+    </div>
+
+</section>
+
+
+<section
+    class="ocr-section"
+    id="ocrSection">
+
+    <div class="ocr-container">
+
+        <h2 class="ocr-title">
+            📸 Ticket OCR Scanner
+        </h2>
+
+        <p class="ocr-description">
+
+            Upload your train ticket PDF and RailRecover
+            will automatically detect the PNR and retrieve
+            your ticket details.
+
+        </p>
+
+        <div class="upload-box">
+
+            <div class="upload-icon">
+                🎫
+            </div>
+
+            <p>
+                Select your ticket PDF
+            </p>
+
+            <input
+                type="file"
+                id="ticketImage"
+                accept=".pdf">
+
+        </div>
+
+        <button
+            type="button"
+            class="scan-btn"
+            onclick="scanTicket()">
+
+            🔍 Scan Ticket
+
+        </button>
+
+        <div id="result"></div>
+
+    </div>
+
+</section>
+
+
+<section class="stats">
+
+    <div class="stat">
+
+        <h2>
+            38+
+        </h2>
+
+        <p>
+            Districts
+        </p>
+
+    </div>
+
+    <div class="stat">
+
+        <h2>
+            183+
+        </h2>
+
+        <p>
+            Stations
+        </p>
+
+    </div>
+
+    <div class="stat">
+
+        <h2>
+            24/7
+        </h2>
+
+        <p>
+            Recovery Support
+        </p>
+
+    </div>
+
+</section>
+
+
+<section class="analytics-section">
+
+    <div class="analytics-container">
+
+        <h2 class="analytics-title">
+            📊 Smart Recovery Analytics
+        </h2>
+
+        <p class="analytics-description">
+            Real-time statistics from the RailRecover database.
+        </p>
+
+        <div class="analytics-grid">
+
+            <div class="analytics-box">
+                <div class="analytics-icon">🎫</div>
+                <h3 id="totalTickets">0</h3>
+                <p>Total Tickets</p>
+            </div>
+
+            <div class="analytics-box">
+                <div class="analytics-icon">♻️</div>
+                <h3>Live</h3>
+                <p>Recovery System</p>
+            </div>
+
+            <div class="analytics-box">
+                <div class="analytics-icon">🔐</div>
+                <h3>Active</h3>
+                <p>Security Monitoring</p>
+            </div>
+
+        </div>
+
+        <div class="analytics-status" id="analyticsStatus">
+            Loading analytics...
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    © 2026 RailRecover • Smart Train Journey Recovery System
+
+</footer>
+
+
+<script>
+
+let detectedPNR = "";
+
+
+function scrollToOCR() {
+
+    document
+        .getElementById("ocrSection")
+        .scrollIntoView({
+            behavior: "smooth"
+        });
+
+}
+
+
+function escapeHtml(text) {
+
+    if (
+        text === null ||
+        text === undefined
+    ) {
+        return "";
+    }
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+async function scanTicket() {
+
+    const fileInput =
+        document.getElementById("ticketImage");
+
+    const result =
+        document.getElementById("result");
+
+
+    if (
+        !fileInput.files ||
+        fileInput.files.length === 0
+    ) {
+
+        result.style.display = "block";
+
+        result.innerHTML = `
+
+            <h3 class="error">
+                ❌ Please select a ticket PDF first.
+            </h3>
+
+        `;
+
+        return;
+    }
+
+
+    const file =
+        fileInput.files[0];
+
+
+    if (
+        !file.name
+            .toLowerCase()
+            .endsWith(".pdf")
+    ) {
+
+        result.style.display = "block";
+
+        result.innerHTML = `
+
+            <h3 class="error">
+                ❌ Please upload a PDF file.
+            </h3>
+
+        `;
+
+        return;
+    }
+
+
+    result.style.display = "block";
+
+    result.innerHTML = `
+
+        <h3 class="info">
+            🔄 Scanning ticket...
+        </h3>
+
+        <p>
+            Please wait while RailRecover reads your ticket.
+        </p>
+
+    `;
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "file",
+        file
+    );
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/ocr-ticket",
+                {
+                    method: "POST",
+                    body: formData
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "OCR server returned HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        console.log(
+            "OCR Response:",
+            data
+        );
+
+
+        if (data.error) {
+
+            result.innerHTML = `
+
+                <h3 class="error">
+                    ❌ OCR Error
+                </h3>
+
+                <div class="ticket-box">
+
+                    <p>
+                        ${escapeHtml(data.error)}
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const ocrText =
+            data.ocrText || "";
+
+
+        detectedPNR =
+            data.pnr || "";
+
+
+        if (
+            !detectedPNR ||
+            detectedPNR === "Not Found"
+        ) {
+
+            result.innerHTML = `
+
+                <h3 class="warning">
+                    ⚠️ Ticket Scanned
+                </h3>
+
+                <div class="ticket-box">
+
+                    <p>
+                        PNR could not be detected automatically.
+                    </p>
+
+                </div>
+
+                <p style="margin-top:20px;">
+
+                    <b>
+                        📄 Extracted Ticket Text:
+                    </b>
+
+                </p>
+
+                <pre>${escapeHtml(
+                    ocrText || "No text extracted"
+                )}</pre>
+
+            `;
+
+            return;
+        }
+
+
+        result.innerHTML = `
+
+            <h3 class="success">
+                ✅ PNR Detected Successfully
+            </h3>
+
+            <div class="ticket-box">
+
+                <p>
+
+                    <b>
+                        🎫 Detected PNR:
+                    </b>
+
+                    ${escapeHtml(detectedPNR)}
+
+                </p>
+
+                <p class="info">
+
+                    🔄 Connecting to
+                    RailRecover database...
+
+                </p>
+
+            </div>
+
+        `;
+
+
+        await automaticallyCheckTicket(
+            detectedPNR,
+            ocrText
+        );
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "OCR Error:",
+            error
+        );
+
+
+        result.innerHTML = `
+
+            <h3 class="error">
+                ❌ Unable to scan ticket
+            </h3>
+
+            <div class="ticket-box">
+
+                <p>
+                    ${escapeHtml(error.message)}
+                </p>
+
+                <p>
+                    Make sure Spring Boot is running.
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+async function automaticallyCheckTicket(
+    pnr,
+    ocrText
+) {
+
+    const result =
+        document.getElementById("result");
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/check-ticket?pnr=" +
+                encodeURIComponent(pnr)
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Ticket check failed: HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const ticket =
+            await response.json();
+
+
+        console.log(
+            "Ticket:",
+            ticket
+        );
+
+
+        if (
+            !ticket ||
+            !ticket.pnr
+        ) {
+
+            result.innerHTML = `
+
+                <h3 class="success">
+                    ✅ OCR Scan Completed
+                </h3>
+
+                <div class="ticket-box">
+
+                    <p>
+
+                        <b>
+                            🎫 PNR:
+                        </b>
+
+                        ${escapeHtml(pnr)}
+
+                    </p>
+
+                    <h3 class="warning">
+
+                        ⚠️ Ticket Not Found
+
+                    </h3>
+
+                    <p>
+
+                        This PNR is not available
+                        in the RailRecover database.
+
+                    </p>
+
+                </div>
+
+                <p style="margin-top:20px;">
+
+                    <b>
+                        📄 Extracted Ticket Text:
+                    </b>
+
+                </p>
+
+                <pre>${escapeHtml(
+                    ocrText || "No text extracted"
+                )}</pre>
+
+            `;
+
+            return;
+
+        }
+
+
+        result.innerHTML = `
+
+            <h3 class="success">
+
+                ✅ Ticket Scanned &
+                Connected Successfully
+
+            </h3>
+
+
+            <div class="ticket-box">
+
+                <p>
+                    <b>🎫 PNR:</b>
+                    ${escapeHtml(ticket.pnr)}
+                </p>
+
+                <p>
+                    <b>🚂 Train:</b>
+                    ${escapeHtml(ticket.trainNumber)}
+                    -
+                    ${escapeHtml(ticket.trainName)}
+                </p>
+
+                <p>
+                    <b>📍 From:</b>
+                    ${escapeHtml(ticket.source)}
+                </p>
+
+                <p>
+                    <b>📍 To:</b>
+                    ${escapeHtml(ticket.destination)}
+                </p>
+
+                <p>
+                    <b>📅 Journey Date:</b>
+                    ${escapeHtml(ticket.journeyDate)}
+                </p>
+
+                <p>
+                    <b>👤 Passenger:</b>
+                    ${escapeHtml(ticket.passengerName)}
+                </p>
+
+                <p>
+                    <b>💰 Fare:</b>
+                    ₹${ticket.fare}
+                </p>
+
+                <p>
+                    <b>📌 Ticket Status:</b>
+                    ${escapeHtml(ticket.status)}
+                </p>
+
+                <p>
+                    <b>♻️ Recovery Status:</b>
+                    ${escapeHtml(
+                        ticket.recoveryStatus ||
+                        "Not Requested"
+                    )}
+                </p>
+
+                <p>
+                    <b>🔢 Recovery Attempts:</b>
+                    ${ticket.recoveryAttempts || 0}
+                </p>
+
+
+                <button
+                    type="button"
+                    class="recover-btn"
+                    onclick="recoverTicket()">
+
+                    ♻️ Recover This Ticket
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="alternate-btn"
+                    onclick="findAlternateTrain()">
+
+                    🚆 Find Alternate Train
+
+                </button>
+
+            </div>
+
+
+            <p style="margin-top:20px;">
+
+                <b>
+                    📄 Extracted Ticket Text:
+                </b>
+
+            </p>
+
+
+            <pre>${escapeHtml(
+                ocrText || "No text extracted"
+            )}</pre>
+
+        `;
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Ticket Check Error:",
+            error
+        );
+
+
+        result.innerHTML = `
+
+            <h3 class="error">
+
+                ❌ Database Connection Error
+
+            </h3>
+
+            <div class="ticket-box">
+
+                <p>
+                    ${escapeHtml(error.message)}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =========================================
+   FIXED ALTERNATE TRAIN NAVIGATION
+   ========================================= */
+
+function findAlternateTrain() {
+
+    window.location.href =
+        "/ticket.html";
+
+}
+
+
+async function recoverTicket() {
+
+    const result =
+        document.getElementById("result");
+
+
+    if (!detectedPNR) {
+
+        result.innerHTML = `
+
+            <h3 class="error">
+                ❌ No valid PNR available.
+            </h3>
+
+        `;
+
+        return;
+    }
+
+
+    result.innerHTML = `
+
+        <h3 class="info">
+            🔄 Recovering ticket...
+        </h3>
+
+        <p>
+            Please wait while RailRecover
+            processes your recovery request.
+        </p>
+
+    `;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/recover-ticket?pnr=" +
+                encodeURIComponent(detectedPNR)
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Recovery failed: HTTP " +
+                response.status
+            );
+
+        }
+
+
+        const ticket =
+            await response.json();
+
+
+        if (
+            !ticket ||
+            !ticket.pnr
+        ) {
+
+            result.innerHTML = `
+
+                <h3 class="error">
+                    ❌ Recovery Failed
+                </h3>
+
+                <p>
+                    Ticket was not found.
+                </p>
+
+            `;
+
+            return;
+
+        }
+
+
+        if (
+            ticket.recoveryStatus ===
+            "SUSPICIOUS"
+        ) {
+
+            result.innerHTML = `
+
+                <h3 class="warning">
+                    ⚠️ Recovery Marked Suspicious
+                </h3>
+
+                <div class="ticket-box">
+
+                    <p>
+                        <b>🎫 PNR:</b>
+                        ${escapeHtml(ticket.pnr)}
+                    </p>
+
+                    <p>
+                        <b>🚂 Train:</b>
+                        ${escapeHtml(ticket.trainName)}
+                    </p>
+
+                    <p>
+                        <b>♻️ Recovery Status:</b>
+                        ${escapeHtml(ticket.recoveryStatus)}
+                    </p>
+
+                    <p>
+                        <b>🔢 Recovery Attempts:</b>
+                        ${ticket.recoveryAttempts}
+                    </p>
+
+                    <p>
+                        Multiple recovery attempts
+                        have been detected.
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+        else {
+
+            result.innerHTML = `
+
+                <h3 class="success">
+                    ✅ Ticket Recovery Request Submitted
+                </h3>
+
+                <div class="ticket-box">
+
+                    <p>
+                        <b>🎫 PNR:</b>
+                        ${escapeHtml(ticket.pnr)}
+                    </p>
+
+                    <p>
+                        <b>🚂 Train:</b>
+                        ${escapeHtml(ticket.trainName)}
+                    </p>
+
+                    <p>
+                        <b>📍 Route:</b>
+                        ${escapeHtml(ticket.source)}
+                        →
+                        ${escapeHtml(ticket.destination)}
+                    </p>
+
+                    <p>
+                        <b>♻️ Recovery Status:</b>
+                        ${escapeHtml(ticket.recoveryStatus)}
+                    </p>
+
+                    <p>
+                        <b>🔢 Recovery Attempts:</b>
+                        ${ticket.recoveryAttempts}
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Recovery Error:",
+            error
+        );
+
+
+        result.innerHTML = `
+
+            <h3 class="error">
+                ❌ Unable to recover ticket
+            </h3>
+
+            <div class="ticket-box">
+
+                <p>
+                    ${escapeHtml(error.message)}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+        /* =========================================
+           SMART RECOVERY ANALYTICS
+           ========================================= */
+
+        async function loadAnalytics() {
+
+            const totalTickets =
+                document.getElementById("totalTickets");
+
+            const analyticsStatus =
+                document.getElementById("analyticsStatus");
+
+            try {
+
+                const response =
+                    await fetch("/api/analytics");
+
+                if (!response.ok) {
+                    throw new Error(
+                        "Analytics server returned HTTP " +
+                        response.status
+                    );
+                }
+
+                const text =
+                    await response.text();
+
+                console.log("Analytics:", text);
+
+                const match =
+                    text.match(/Total Tickets:\s*(\d+)/i);
+
+                if (match) {
+
+                    totalTickets.textContent =
+                        match[1];
+
+                    analyticsStatus.textContent =
+                        "✓ Analytics connected to database";
+
+                } else {
+
+                    analyticsStatus.textContent =
+                        "Analytics data format could not be read.";
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Analytics Error:",
+                    error
+                );
+
+                totalTickets.textContent = "—";
+
+                analyticsStatus.textContent =
+                    "⚠️ Unable to load live analytics";
+
+            }
+        }
+
+        loadAnalytics();
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RailRecover - OCR Ticket Scanner</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #312e81);
+            color: white;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #cbd5e1;
+            font-size: 16px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+        }
+
+        .upload-box {
+            border: 2px dashed #6366f1;
+            border-radius: 15px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.08);
+            color: white;
+            border-radius: 10px;
+            border: 1px solid #475569;
+            margin-top: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: #6366f1;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: #4f46e5;
+        }
+
+        .back-button {
+            display: block;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .success {
+            color: #4ade80;
+            margin-bottom: 15px;
+        }
+
+        .warning {
+            color: #facc15;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .error {
+            color: #f87171;
+        }
+
+        .ticket-box {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .ticket-box p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        pre {
+            background: #020617;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #cbd5e1;
+            margin-top: 10px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #93c5fd;
+            margin-top: 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .recover-btn {
+            background: #16a34a;
+        }
+
+        .recover-btn:hover {
+            background: #15803d;
+        }
+
+        .suspicious {
+            color: #f87171;
+            font-weight: bold;
+        }
+
+        .normal {
+            color: #4ade80;
+            font-weight: bold;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #475569;
+            margin: 20px 0;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>🎫 RailRecover</h1>
+
+        <p>
+            AI-Powered Ticket Recovery & OCR Scanner
+        </p>
+
+    </div>
+
+
+
+    <!-- OCR CARD -->
+
+    <div class="card">
+
+        <h2>📷 Ticket OCR Scanner</h2>
+
+        <div class="upload-box">
+
+            <p>
+                Upload your railway ticket PDF
+            </p>
+
+            <input
+                type="file"
+                id="ticketFile"
+                accept=".pdf"
+            >
+
+        </div>
+
+
+        <button onclick="scanTicket()">
+
+            🔍 Scan Ticket
+
+        </button>
+
+
+        <div
+            id="loading"
+            class="loading hidden">
+
+            ⏳ Scanning ticket... Please wait.
+
+        </div>
+
+    </div>
+
+
+
+    <!-- RESULT -->
+
+    <div
+        id="result"
+        class="card hidden">
+    </div>
+
+
+
+    <!-- BACK -->
+
+    <a
+        href="/"
+        class="back-button">
+
+        ← Back to RailRecover
+
+    </a>
+
+
+</div>
+
+
+
+<!-- ============================= -->
+<!-- JAVASCRIPT -->
+<!-- ============================= -->
+
+<script>
+
+
+    let detectedPNR = null;
+
+
+
+    // ==========================================
+    // SCAN TICKET
+    // ==========================================
+
+    async function scanTicket() {
+
+
+        const fileInput =
+            document.getElementById("ticketFile");
+
+
+        const result =
+            document.getElementById("result");
+
+
+        const loading =
+            document.getElementById("loading");
+
+
+        // Clear old result
+
+        result.classList.add("hidden");
+
+        result.innerHTML = "";
+
+        detectedPNR = null;
+
+
+
+        // Check file
+
+        if (
+            !fileInput.files ||
+            fileInput.files.length === 0
+        ) {
+
+            alert(
+                "Please select a ticket PDF first."
+            );
+
+            return;
+        }
+
+
+
+        const file =
+            fileInput.files[0];
+
+
+
+        // Check PDF
+
+        if (
+            !file.name
+                .toLowerCase()
+                .endsWith(".pdf")
+        ) {
+
+            alert(
+                "Please upload a PDF file."
+            );
+
+            return;
+        }
+
+
+
+        // Show loading
+
+        loading.classList.remove("hidden");
+
+
+
+        // Create FormData
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "file",
+            file
+        );
+
+
+
+        try {
+
+
+            // Send PDF to Spring Boot
+
+            const response =
+                await fetch(
+                    "/ocr-ticket",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+
+            // Check response
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Server error: " +
+                    response.status
+                );
+
+            }
+
+
+
+            // Convert response to JSON
+
+            const data =
+                await response.json();
+
+
+
+            console.log(
+                "OCR Response:",
+                data
+            );
+
+
+
+            // Hide loading
+
+            loading.classList.add(
+                "hidden"
+            );
+
+
+
+            // Backend error
+
+            if (data.error) {
+
+                result.classList.remove(
+                    "hidden"
+                );
+
+
+                result.innerHTML = `
+
+                    <h3 class="error">
+                        ❌ OCR Failed
+                    </h3>
+
+                    <div class="ticket-box">
+
+                        <p>
+                            ${escapeHtml(data.error)}
+                        </p>
+
+                    </div>
+
+                `;
+
+                return;
+            }
+
+
+
+            // Get OCR text
+
+            const ocrText =
+                data.ocrText || "";
+
+
+
+            // Get PNR
+
+            const pnr =
+                data.pnr || "Not Found";
+
+
+
+            // Show OCR result
+
+            result.classList.remove(
+                "hidden"
+            );
+
+
+            result.innerHTML = `
+
+                <h3 class="success">
+                    ✅ OCR Scan Completed
+                </h3>
+
+                <div class="ticket-box">
+
+                    <p>
+
+                        <b>🎫 Detected PNR:</b>
+
+                        ${escapeHtml(pnr)}
+
+                    </p>
+
+                </div>
+
+
+                <p style="margin-top:20px;">
+
+                    <b>
+                        📄 Extracted Ticket Text:
+                    </b>
+
+                </p>
+
+
+                <pre>${escapeHtml(
+                    ocrText ||
+                    "No text extracted"
+                )}</pre>
+
+
+                <div id="ticketDetails"></div>
+
+            `;
+
+
+
+            // ==================================
+            // CHECK PNR
+            // ==================================
+
+            if (
+                pnr !== "Not Found" &&
+                /^\d{10}$/.test(pnr)
+            ) {
+
+
+                detectedPNR = pnr;
+
+
+                await automaticallyCheckTicket(
+                    pnr
+                );
+
+
+            } else {
+
+
+                document.getElementById(
+                    "ticketDetails"
+                ).innerHTML = `
+
+                    <div class="ticket-box">
+
+                        <h3 class="warning">
+
+                            ⚠️ PNR Not Detected
+
+                        </h3>
+
+                        <p>
+
+                            We could not find a valid
+                            10-digit PNR in the ticket.
+
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+
+        } catch (error) {
+
+
+            console.error(error);
+
+
+            loading.classList.add(
+                "hidden"
+            );
+
+
+            result.classList.remove(
+                "hidden"
+            );
+
+
+            result.innerHTML = `
+
+                <h3 class="error">
+
+                    ❌ Something went wrong
+
+                </h3>
+
+
+                <div class="ticket-box">
+
+                    <p>
+
+                        ${escapeHtml(
+                            error.message
+                        )}
+
+                    </p>
+
+
+                    <p>
+
+                        Please make sure
+                        Spring Boot is running.
+
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+
+    // ==========================================
+    // CHECK TICKET
+    // ==========================================
+
+    async function automaticallyCheckTicket(
+        pnr
+    ) {
+
+
+        const ticketDetails =
+            document.getElementById(
+                "ticketDetails"
+            );
+
+
+
+        ticketDetails.innerHTML = `
+
+            <div class="ticket-box">
+
+                <p>
+
+                    🔎 Checking PNR in
+                    RailRecover database...
+
+                </p>
+
+            </div>
+
+        `;
+
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "/check-ticket?pnr=" +
+                    encodeURIComponent(pnr)
+                );
+
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to check ticket."
+                );
+
+            }
+
+
+
+            const ticket =
+                await response.json();
+
+
+
+            console.log(
+                "Ticket:",
+                ticket
+            );
+
+
+
+            // ==================================
+            // TICKET NOT FOUND
+            // ==================================
+
+            if (
+                !ticket ||
+                !ticket.pnr
+            ) {
+
+
+                ticketDetails.innerHTML = `
+
+                    <div class="ticket-box">
+
+                        <h3 class="warning">
+
+                            ⚠️ Ticket Not Found
+
+                        </h3>
+
+
+                        <p>
+
+                            PNR
+                            <b>${escapeHtml(pnr)}</b>
+                            is not available in the
+                            RailRecover database.
+
+                        </p>
+
+
+                        <p>
+
+                            OCR scan was successful,
+                            but no matching ticket
+                            was found.
+
+                        </p>
+
+                    </div>
+
+                `;
+
+
+                return;
+
+            }
+
+
+
+            // ==================================
+            // TICKET FOUND
+            // ==================================
+
+            ticketDetails.innerHTML = `
+
+                <div class="ticket-box">
+
+                    <h3 class="success">
+
+                        ✅ Ticket Found
+
+                    </h3>
+
+
+                    <p>
+
+                        <b>🎫 PNR:</b>
+                        ${escapeHtml(ticket.pnr)}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>🚆 Train Number:</b>
+                        ${escapeHtml(ticket.trainNumber)}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>🚆 Train Name:</b>
+                        ${escapeHtml(ticket.trainName)}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>📍 From:</b>
+                        ${escapeHtml(ticket.source)}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>📍 To:</b>
+                        ${escapeHtml(ticket.destination)}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>📅 Journey Date:</b>
+                        ${escapeHtml(ticket.journeyDate)}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>👤 Passenger:</b>
+                        ${escapeHtml(ticket.passengerName)}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>💰 Fare:</b>
+                        ₹${ticket.fare}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>📌 Status:</b>
+                        ${escapeHtml(ticket.status)}
+
+                    </p>
+
+
+                    <hr>
+
+
+                    <p>
+
+                        <b>
+                            🔄 Recovery Attempts:
+                        </b>
+
+                        ${ticket.recoveryAttempts || 0}
+
+                    </p>
+
+
+                    <p>
+
+                        <b>
+                            🛡 Recovery Status:
+                        </b>
+
+                        <span class="${
+                            ticket.recoveryStatus ===
+                            "SUSPICIOUS"
+                                ? "suspicious"
+                                : "normal"
+                        }">
+
+                            ${
+                                ticket.recoveryStatus ||
+                                "NOT REQUESTED"
+                            }
+
+                        </span>
+
+                    </p>
+
+
+                    <button
+                        class="recover-btn"
+                        onclick="recoverTicket()">
+
+                        🔐 Recover This Ticket
+
+                    </button>
+
+
+                    <div id="recoveryResult"></div>
+
+                </div>
+
+            `;
+
+
+        } catch (error) {
+
+
+            console.error(error);
+
+
+            ticketDetails.innerHTML = `
+
+                <div class="ticket-box">
+
+                    <h3 class="error">
+
+                        ❌ Ticket Check Failed
+
+                    </h3>
+
+
+                    <p>
+
+                        ${escapeHtml(
+                            error.message
+                        )}
+
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+
+    // ==========================================
+    // RECOVER TICKET
+    // ==========================================
+
+    async function recoverTicket() {
+
+
+        if (!detectedPNR) {
+
+            alert(
+                "No valid PNR available."
+            );
+
+            return;
+
+        }
+
+
+
+        const recoveryResult =
+            document.getElementById(
+                "recoveryResult"
+            );
+
+
+
+        recoveryResult.innerHTML = `
+
+            <p style="margin-top:20px;">
+
+                ⏳ Processing recovery request...
+
+            </p>
+
+        `;
+
+
+
+        try {
+
+
+            const response =
+                await fetch(
+                    "/recover-ticket?pnr=" +
+                    encodeURIComponent(
+                        detectedPNR
+                    )
+                );
+
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Recovery request failed."
+                );
+
+            }
+
+
+
+            const ticket =
+                await response.json();
+
+
+
+            console.log(
+                "Recovery:",
+                ticket
+            );
+
+
+
+            if (
+                !ticket ||
+                !ticket.pnr
+            ) {
+
+                recoveryResult.innerHTML = `
+
+                    <p class="error">
+
+                        ❌ Ticket could not
+                        be recovered.
+
+                    </p>
+
+                `;
+
+                return;
+
+            }
+
+
+
+            // ==================================
+            // SUSPICIOUS
+            // ==================================
+
+            if (
+                ticket.recoveryStatus ===
+                "SUSPICIOUS"
+            ) {
+
+
+                recoveryResult.innerHTML = `
+
+                    <div class="ticket-box">
+
+                        <h3 class="suspicious">
+
+                            ⚠️ Suspicious Recovery
+                            Detected
+
+                        </h3>
+
+
+                        <p>
+
+                            This ticket has reached
+                            multiple recovery attempts.
+
+                        </p>
+
+
+                        <p>
+
+                            <b>
+                                Recovery Attempts:
+                            </b>
+
+                            ${ticket.recoveryAttempts}
+
+                        </p>
+
+
+                        <p>
+
+                            RailRecover has flagged
+                            this request for
+                            additional verification.
+
+                        </p>
+
+                    </div>
+
+                `;
+
+
+            } else {
+
+
+                // ==================================
+                // NORMAL RECOVERY
+                // ==================================
+
+                recoveryResult.innerHTML = `
+
+                    <div class="ticket-box">
+
+                        <h3 class="success">
+
+                            ✅ Recovery Request
+                            Submitted
+
+                        </h3>
+
+
+                        <p>
+
+                            Your ticket recovery
+                            request has been
+                            recorded successfully.
+
+                        </p>
+
+
+                        <p>
+
+                            <b>
+                                Recovery Attempts:
+                            </b>
+
+                            ${ticket.recoveryAttempts}
+
+                        </p>
+
+
+                        <p>
+
+                            <b>
+                                Status:
+                            </b>
+
+                            ${escapeHtml(
+                                ticket.recoveryStatus
+                            )}
+
+                        </p>
+
+                    </div>
+
+                `;
+
+            }
+
+
+        } catch (error) {
+
+
+            console.error(error);
+
+
+            recoveryResult.innerHTML = `
+
+                <div class="ticket-box">
+
+                    <h3 class="error">
+
+                        ❌ Recovery Failed
+
+                    </h3>
+
+
+                    <p>
+
+                        ${escapeHtml(
+                            error.message
+                        )}
+
+                    </p>
+
+                </div>
+
+            `;
+
+        }
+
+    }
+
+
+
+    // ==========================================
+    // ESCAPE HTML
+    // ==========================================
+
+    function escapeHtml(text) {
+
+
+        if (
+            text === null ||
+            text === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(text)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>
+
